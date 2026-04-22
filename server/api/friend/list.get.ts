@@ -22,8 +22,13 @@ export default defineEventHandler(async (event) => {
     })
 
     if (query.simple != '1') {
+        const players = await $fetch<any[]>('https://cache.samifying.com/api/data/list', {
+            method: 'POST',
+            body: data.map(p => p.playerId)
+        })
+
         for (let obj of (data as any[])) {
-            obj.player = await $fetch<any>('https://cache.samifying.com/api/data/' + obj.playerId)
+            obj.player = players.find(p => p.id == obj.playerId)
         }
     }
 
